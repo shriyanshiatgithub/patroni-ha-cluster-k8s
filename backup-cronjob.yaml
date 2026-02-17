@@ -1,0 +1,27 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: patroni-backup
+spec:
+  schedule: "0 * * * *"   # every hour
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: backup
+            image: postgres:16
+            command:
+            - /bin/bash
+            - -c
+            - |
+              TIMESTAMP=$(date +%F-%H-%M)
+              PGPASSWORD=zalando pg_dump -h patronidemo -U postgres > /backup/db-$TIMESTAMP.sql
+            volumeMounts:
+            - name: backup-storage
+              mountPath: /backup
+          restartPolicy: OnFailure
+          volumes:
+          - name: backup-storage
+            persistentVolumeClaim:
+              claimName: patroni-backup-pvc
