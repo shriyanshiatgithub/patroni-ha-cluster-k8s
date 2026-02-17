@@ -33,7 +33,8 @@ spec:
       serviceAccountName: patronidemo
       containers:
       - name: *cluster_name
-        image: patroni  # docker build -t patroni .
+        image: shriyanshiatdocker/patroni-ha:1.0
+
         imagePullPolicy: IfNotPresent
         readinessProbe:
           httpGet:
