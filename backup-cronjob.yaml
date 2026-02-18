@@ -3,7 +3,7 @@ kind: CronJob
 metadata:
   name: patroni-backup
 spec:
-  schedule: "0 * * * *"   # every hour
+  schedule: "*/2 * * * *"   # every hour
   jobTemplate:
     spec:
       template:
@@ -16,7 +16,7 @@ spec:
             - -c
             - |
               TIMESTAMP=$(date +%F-%H-%M)
-              PGPASSWORD=zalando pg_dump -h patronidemo -U postgres > /backup/db-$TIMESTAMP.sql
+              PGPASSWORD=zalando pg_dump -h patronidemo -U postgres appdb > /backup/db-$TIMESTAMP.sql
             volumeMounts:
             - name: backup-storage
               mountPath: /backup
